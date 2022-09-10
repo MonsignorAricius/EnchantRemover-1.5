@@ -13,13 +13,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import world.bentobox.bentobox.BentoBox;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public final class Enchantremover extends JavaPlugin implements Listener {
     public static int amountOfEnchants;
@@ -70,6 +72,15 @@ public final class Enchantremover extends JavaPlugin implements Listener {
     public void onPlayerCloseInvEventUnenchant(InventoryCloseEvent e) {
         if (e.getView().getTitle().equals(reference.IVNNAME)) {
             player.setCanPickupItems(true);
+        }
+    }
+
+    @EventHandler
+    public void onSwapItemInHand(InventoryClickEvent e) {
+        if (e.getView().getTitle().equals(reference.IVNNAME)) {
+            if (e.getAction().equals(InventoryAction.HOTBAR_SWAP)) {
+                e.setCancelled(true);
+            }
         }
     }
 
