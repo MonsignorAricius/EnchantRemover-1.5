@@ -1,10 +1,15 @@
 name: EnchantRemover
-version: '1.5'
+version: '2.0'
 main: me.aricius.enchantremover.Enchantremover
 authors: [ Aricius ]
 api-version: 1.17
 permissions:
   unenchanter.use:
     description: Použij NPC na spawnu.
+  obchodnik.use:
+    description: Použij NPC na spawnu.
 commands:
   unenchant:
+    description: Použij NPC na spawnu.
+  obchodnik:
+    description: Použij NPC na spawnu.

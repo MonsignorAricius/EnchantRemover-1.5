@@ -1,7 +1,6 @@
 package me.aricius.enchantremover;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.md_5.bungee.api.ChatColor;
 import net.seanomik.JustAnAPI.utils.ParticleUtil;
@@ -10,12 +9,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -35,6 +30,7 @@ public final class Enchantremover extends JavaPlugin implements Listener {
 
     public void onEnable() {
         this.getCommand("unenchant").setExecutor(new CommandUnenchant());
+        this.getCommand("obchodnik").setExecutor(new CommandObchodnik());
         this.getServer().getPluginManager().registerEvents(this, this);
         plugin = getPlugin(Enchantremover.class);
     }
@@ -50,8 +46,30 @@ public final class Enchantremover extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onPlayerClickOnItem2(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        if (player.hasPotionEffect(PotionEffectType.UNLUCK)) {
+            if (e.getCurrentItem() != null && this.isClickedBow(e)) {
+                this.giveForBow(e);
+            } else if (e.getCurrentItem() != null && this.isClickedLH(e)) {
+                this.giveForLH(e);
+            } else if (e.getCurrentItem() != null && this.isClickedLC(e)) {
+                this.giveForLC(e);
+            } else if(e.getCurrentItem() != null && this.isClickedLL(e)) {
+                this.giveForLL(e);
+            } else if (e.getCurrentItem() != null && this.isClickedLB(e)) {
+                this.giveForLB(e);
+            } else if (e.getCurrentItem() != null && this.isClickedOS(e)){
+                this.giveForOS(e);
+            } else {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerMoveItem(InventoryClickEvent e) {
-        if (e.getView().getTitle().equals(reference.IVNNAME)) {
+        if (e.getView().getTitle().equals(reference.IVNNAME) || e.getView().getTitle().equals(reference.INVNAME2)) {
             if (e.isRightClick() || e.isLeftClick() || e.isShiftClick()) {
                 e.setCancelled(true);
             }
@@ -63,21 +81,23 @@ public final class Enchantremover extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerOpenInvEventUnenchant(InventoryOpenEvent e) {
-        if (e.getView().getTitle().equals(reference.IVNNAME)) {
+        if (e.getView().getTitle().equals(reference.IVNNAME) || e.getView().getTitle().equals(reference.INVNAME2)) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 60000, 1, false, false, false));
             player.setCanPickupItems(false);
         }
     }
 
     @EventHandler
     public void onPlayerCloseInvEventUnenchant(InventoryCloseEvent e) {
-        if (e.getView().getTitle().equals(reference.IVNNAME)) {
+        if (e.getView().getTitle().equals(reference.IVNNAME) || e.getView().getTitle().equals(reference.INVNAME2)) {
+            player.removePotionEffect(PotionEffectType.UNLUCK);
             player.setCanPickupItems(true);
         }
     }
 
     @EventHandler
     public void onSwapItemInHand(InventoryClickEvent e) {
-        if (e.getView().getTitle().equals(reference.IVNNAME)) {
+        if (e.getView().getTitle().equals(reference.IVNNAME) || e.getView().getTitle().equals(reference.INVNAME2)) {
             if (e.getAction().equals(InventoryAction.HOTBAR_SWAP)) {
                 e.setCancelled(true);
             }
@@ -88,6 +108,30 @@ public final class Enchantremover extends JavaPlugin implements Listener {
         ItemStack item = e.getCurrentItem();
         return item.getType() == Material.ENCHANTED_BOOK;
     }
+    private boolean isClickedBow(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.BOW;
+    }
+    private boolean isClickedLH(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.LEATHER_HELMET;
+    }
+    private boolean isClickedLC(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.LEATHER_CHESTPLATE;
+    }
+    private boolean isClickedLL(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.LEATHER_LEGGINGS;
+    }
+    private boolean isClickedLB(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.LEATHER_BOOTS;
+    }
+    private boolean isClickedOS(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        return item.getType() == Material.OAK_SAPLING;
+    }
 
     private void removeEnchant(InventoryClickEvent e, int index) {
         ItemStack item = e.getCurrentItem();
@@ -97,7 +141,7 @@ public final class Enchantremover extends JavaPlugin implements Listener {
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
             player.closeInventory();
         } else if (player.getInventory().firstEmpty() == -1) {
-            player.sendMessage(ChatColor.RED + "Kouzelník:" + ChatColor.LIGHT_PURPLE + " Nemáš dostatek místa.");
+            player.sendMessage(ChatColor.RED + "Kouzelník: " + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa.");
         } else if (newLvl < 0 && player.getGameMode() != GameMode.CREATIVE) {
             if (newLvl * -1 == 1) {
                 player.sendMessage(ChatColor.RED + "Kouzelník: " + ChatColor.LIGHT_PURPLE + "Nemáš dost na zaplacení. Potřebuješ ješte " + newLvl * -1 + " XP.");
@@ -119,6 +163,107 @@ public final class Enchantremover extends JavaPlugin implements Listener {
             ParticleUtil.ColorAndSize(Color.PURPLE, 1.5F);
             ParticleUtil.CreateBouncingSphere(plugin, player, Particle.REDSTONE, 1, 1.5F, 8, 0.0D);
             player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_CHIME, 10.0F, 1.0F);
+        }
+
+    }
+
+    private void giveForBow(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameBow)) {
+            player.closeInventory();
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.OAK_LOG, 2));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
+        }
+    }
+    private void giveForLH(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameLH)) {
+            player.closeInventory();
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.LEATHER, 4));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
+        }
+    }
+    private void giveForLC(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameLC)) {
+            player.closeInventory();
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.LEATHER, 4));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
+        }
+    }
+    private void giveForLL(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameLL)) {
+            player.closeInventory();
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.LEATHER, 4));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
+        }
+    }
+    private void giveForLB(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameLB)) {
+            player.closeInventory();
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.LEATHER, 4));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
+        }
+    }
+    private void giveForOS(InventoryClickEvent e) {
+        ItemStack itemis = e.getCurrentItem();
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.RED + "Obchodník:" + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa. (Hotbar se nepočíta)");
+            player.closeInventory();
+        }
+        if (itemis != null && itemis.getItemMeta().getDisplayName().equalsIgnoreCase(reference.nameOak)) {
+            player.closeInventory();
+        } else if (itemis.getAmount() != 64) {
+            player.closeInventory();
+            player.sendMessage(ChatColor.RED + "Obchodník: " + ChatColor.LIGHT_PURPLE + "Stack nemá 64 saplingů.");
+        } else {
+            player.getInventory().removeItem(itemis);
+            player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+            player.updateInventory();
+            Location loc = player.getLocation();
+            player.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 10.0F, 1.0F);
         }
 
     }
