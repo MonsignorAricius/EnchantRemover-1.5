@@ -109,10 +109,11 @@ public final class Enchantremover extends JavaPlugin implements Listener {
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
             player.closeInventory();
         } else if (player.getInventory().firstEmpty() == -1) {
-            player.sendMessage(ChatColor.RED + "Kouzelník: " + ChatColor.LIGHT_PURPLE + "Nemáš dostatek místa.");
-        } else if (newLvl < 0 && !player.isOp()) {
+            player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]" + " §7Nemáš dostatek místa.");
+            player.closeInventory();
+        } else if (newLvl < 0) {
             if (newLvl * -1 == 1) {
-                player.sendMessage(ChatColor.RED + "Kouzelník: " + ChatColor.LIGHT_PURPLE + "Nemáš dost na zaplacení. Potřebuješ ješte " + newLvl * -1 + " krystalů.");
+                player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]" + " §7Nemáš dost na zaplacení. Potřebuješ ješte "+ChatColor.of("#FB608A")+newLvl * -1 + " §7krystalů.");
                 player.closeInventory();
             }
         } else {

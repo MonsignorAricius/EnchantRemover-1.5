@@ -10,7 +10,7 @@ public class reference {
     }
 
     static {
-        CHATPREFIX = ChatColor.RED + "[" + ChatColor.RED + "Kouzelník" + ChatColor.RED + "] ";
-        IVNNAME = ChatColor.DARK_PURPLE + "Kouzelník";
+        CHATPREFIX = ChatColor.RED + "§8[" + ChatColor.of("#FB608A")+"§lKouzelník" + "§8] ";
+        IVNNAME = ChatColor.of("#FB608A")+"§lKouzelník";
     }
 }

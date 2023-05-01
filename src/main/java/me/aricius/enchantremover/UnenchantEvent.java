@@ -25,12 +25,12 @@ public class UnenchantEvent implements Listener {
         if (e.getHand() == EquipmentSlot.HAND) {
             if (npc.hasMetadata("NPC") && npc.getName().equals(plugin.getConfig().getString("NPCname"))) {
                 if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                    player.sendMessage(ChatColor.RED + "Kouzelník:" + ChatColor.LIGHT_PURPLE + " Táhle věc není začarovaná.");
+                    player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]"+" §7Nemáš v ruce žádný začarovaný item.");
                 } else if (player.getInventory().getItemInMainHand().getEnchantments().size() >= 1) {
                     ItemStack item = player.getInventory().getItemInMainHand();
                     Inventory inv = this.plugin.getServer().createInventory(player, 54, reference.IVNNAME);
                     inv.setItem(13, (new ItemStackUtil()).setItem(item.getType()).setName(item.getItemMeta().getDisplayName()).setEnchants(item.getEnchantments()).buildItem());
-                    inv.setItem(12, (new ItemStackUtil()).setItem(Material.NAME_TAG).setName("Klikni na knižku, kterou chceš získat").buildItem());
+                    inv.setItem(12, (new ItemStackUtil()).setItem(Material.NAME_TAG).setName(ChatColor.of("#FB608A")+"Klikni na enchant, který chceš získat").buildItem());
                     Enchantremover.amountOfEnchants = 0;
                     for(int i = 0; i < item.getEnchantments().size(); ++i) {
                         int newI = i + 18;
@@ -43,7 +43,7 @@ public class UnenchantEvent implements Listener {
                     }
                     player.openInventory(inv);
                 } else {
-                    player.sendMessage(ChatColor.RED + "Kouzelník:" + ChatColor.LIGHT_PURPLE + " Táhle věc není začarovaná.");
+                    player.sendMessage ("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]"+" §7Tahle věc není začarovaná.");
                 }
             }
         }
