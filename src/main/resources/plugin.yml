@@ -1,15 +1,13 @@
 name: EnchantRemover
-version: '2.0'
+version: 1.0
 main: me.aricius.enchantremover.Enchantremover
-authors: [ Aricius ]
-api-version: 1.17
-permissions:
-  unenchanter.use:
-    description: Použij NPC na spawnu.
-  obchodnik.use:
-    description: Použij NPC na spawnu.
+authors: [Aricius, Kaykka_]
+depend: [EndlessCrystal]
+api-version: 1.19
+
 commands:
-  unenchant:
-    description: Použij NPC na spawnu.
-  obchodnik:
-    description: Použij NPC na spawnu.
+  kouzelnik:
+    description: Reload config of Kouzelník.
+permissions:
+  kouzelnik.reload:
+    default: op
