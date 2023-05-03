@@ -1,6 +1,6 @@
-name: EnchantRemover
-version: 1.0
-main: me.aricius.enchantremover.Enchantremover
+name: Kouzelnik
+version: 2.0
+main: me.aricius.kouzelnik.Kouzelnik
 authors: [Aricius, Kaykka_]
 depend: [EndlessCrystal]
 api-version: 1.19

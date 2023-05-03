@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.aricius</groupId>
-    <artifactId>EnchantRemover</artifactId>
+    <artifactId>Kouzelnik</artifactId>
     <version>1.5</version>
     <packaging>jar</packaging>
 
-    <name>EnchantRemover</name>
+    <name>Kouzelnik</name>
 
     <properties>
         <java.version>1.8</java.version>

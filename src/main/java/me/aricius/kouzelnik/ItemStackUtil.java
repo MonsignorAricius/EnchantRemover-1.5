@@ -1,4 +1,4 @@
-package me.aricius.enchantremover;
+package me.aricius.kouzelnik;
 
 import java.util.ArrayList;
 import java.util.Arrays;

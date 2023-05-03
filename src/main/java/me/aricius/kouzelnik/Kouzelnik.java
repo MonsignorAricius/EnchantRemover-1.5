@@ -1,4 +1,4 @@
-package me.aricius.enchantremover;
+package me.aricius.kouzelnik;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -18,21 +17,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public final class Enchantremover extends JavaPlugin implements Listener {
+public final class Kouzelnik extends JavaPlugin implements Listener {
     public static int amountOfEnchants;
     public static Enchantment[] enchants;
     public static Plugin plugin;
     public static EndlessCrystal eapi;
 
-    public Enchantremover() {
+    public Kouzelnik() {
     }
 
     @Override
     public void onEnable() {
-        this.getServer().getPluginManager().registerEvents(new UnenchantEvent(), this);
+        this.getServer().getPluginManager().registerEvents(new KouzelnikEvent(), this);
         this.getServer().getPluginManager().registerEvents(this, this);
-        getCommand("kouzelnik").setExecutor(new EnchantCommand());
-        plugin = getPlugin(Enchantremover.class);
+        getCommand("kouzelnik").setExecutor(new KouzelnikCommand());
+        plugin = getPlugin(Kouzelnik.class);
         this.saveDefaultConfig();
         if (getServer().getPluginManager().getPlugin("EndlessCrystal") == null) {
             getLogger().severe("EndlessCrystal plugin must be installed for this plugin to work! Disabling plugin.");
@@ -51,7 +50,7 @@ public final class Enchantremover extends JavaPlugin implements Listener {
     public void onPlayerClickOnItem(InventoryClickEvent e) {
         if (e.getRawSlot() == e.getSlot() && e.getView().getTitle().equals(reference.IVNNAME)) {
             if (e.getCurrentItem() != null && this.isClickedBook(e)) {
-                this.removeEnchant(e, e.getSlot() - 18);
+                this.removeEnchant(e, e.getSlot() - 29);
             }
             e.setCancelled(true);
         }
@@ -103,6 +102,7 @@ public final class Enchantremover extends JavaPlugin implements Listener {
 
     private void removeEnchant(InventoryClickEvent e, int index) {
         Player player = (Player) e.getWhoClicked();
+        World worl = player.getWorld();
         ItemStack item = e.getCurrentItem();
         Enchantment enchantment = enchants[index];
         int newLvl = eapi.getAPI().look(player.getUniqueId()) - getCost(player.getInventory().getItemInMainHand().getEnchantmentLevel(enchantment));
@@ -111,10 +111,19 @@ public final class Enchantremover extends JavaPlugin implements Listener {
         } else if (player.getInventory().firstEmpty() == -1) {
             player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]" + " §7Nemáš dostatek místa.");
             player.closeInventory();
+            Location loca = player.getLocation();
+            worl.playSound(loca, Sound.ENTITY_VILLAGER_NO, 10.0F, 1.0F);
         } else if (newLvl < 0) {
             if (newLvl * -1 == 1) {
                 player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]" + " §7Nemáš dost na zaplacení. Potřebuješ ješte "+ChatColor.of("#FB608A")+newLvl * -1 + " §7krystalů.");
                 player.closeInventory();
+                Location loca = player.getLocation();
+                worl.playSound(loca, Sound.ENTITY_VILLAGER_NO, 10.0F, 1.0F);
+            } else {
+                player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]" + " §7Nemáš dost na zaplacení. Potřebuješ ješte "+ChatColor.of("#FB608A")+newLvl * -1 + " §7krystalů.");
+                player.closeInventory();
+                Location loca = player.getLocation();
+                worl.playSound(loca, Sound.ENTITY_VILLAGER_NO, 10.0F, 1.0F);
             }
         } else {
             ItemMeta meta = item.getItemMeta();
@@ -122,13 +131,12 @@ public final class Enchantremover extends JavaPlugin implements Listener {
             item.setItemMeta(meta);
             player.getInventory().addItem(new ItemStack[]{item});
             player.getInventory().getItemInMainHand().removeEnchantment(enchantment);
-            if (!player.isOp()) {
-                eapi.getAPI().set(player.getUniqueId(), newLvl);
-            }
-
+            eapi.getAPI().set(player.getUniqueId(), newLvl);
             player.closeInventory();
             Location loc = player.getLocation();
             player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_CHIME, 10.0F, 1.0F);
+            Location loc2 = player.getLocation().add(0.0, 2.0, 0.0);
+            worl.spawnParticle(Particle.TOTEM, loc2, 30);
         }
 
     }

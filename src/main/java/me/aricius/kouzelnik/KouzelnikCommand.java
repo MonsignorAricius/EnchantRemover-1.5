@@ -1,4 +1,4 @@
-package me.aricius.enchantremover;
+package me.aricius.kouzelnik;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
@@ -6,8 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-public class EnchantCommand implements CommandExecutor {
-    private final Plugin plugin = Enchantremover.getPlugin(Enchantremover.class);
+public class KouzelnikCommand implements CommandExecutor {
+    private final Plugin plugin = Kouzelnik.getPlugin(Kouzelnik.class);
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] strings) {
         if (!sender.hasPermission("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]"+ "§7kouzelnik.reload")) {
