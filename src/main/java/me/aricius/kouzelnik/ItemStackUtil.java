@@ -3,9 +3,8 @@ package me.aricius.kouzelnik;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -16,9 +15,12 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ItemStackUtil {
     public ItemStack item;
+    public static Particle.DustOptions dustOptions;
 
     public ItemStackUtil() {
     }
@@ -94,5 +96,67 @@ public class ItemStackUtil {
 
     public ItemStack buildItem() {
         return this.item;
+    }
+
+    public static ItemStackUtil ColorAndSize(Color color, float size) {
+        dustOptions = new Particle.DustOptions(color, size);
+        return null;
+    }
+
+    public ItemStackUtil createParticle(Player player, Particle particle, Location loc, int particleAmount, double offsetX, double offsetY, double offsetZ) {
+        player.spawnParticle(particle, loc, particleAmount, offsetX, offsetY, offsetZ, dustOptions);
+        return null;
+    }
+
+    public static ItemStackUtil CreateSphere(Plugin plugin, final Player player, final Particle particle, final int particleAmount, final float radius, final int amountOfLines, double offsetY) {
+        (new BukkitRunnable() {
+            double phi = 0.0;
+
+            public void run() {
+                this.phi += Math.PI / (double)amountOfLines;
+                Location loc = player.getLocation();
+
+                for(double theta = 0.0; theta <= 6.283185307179586; theta += 0.07853981633974483) {
+                    double x = (double)radius * Math.cos(theta) * Math.sin(this.phi);
+                    double y = (double)radius * Math.cos(this.phi) + 1.5;
+                    double z = (double)radius * Math.sin(theta) * Math.sin(this.phi);
+                    loc.add(x, y, z);
+                    player.spawnParticle(particle, loc, particleAmount, 0.0, 0.0, 0.0, ItemStackUtil.dustOptions);
+                    loc.subtract(x, y, z);
+                }
+
+                if (this.phi > Math.PI) {
+                    this.cancel();
+                }
+
+            }
+        }).runTaskTimer(plugin, 0L, 1L);
+        return null;
+    }
+
+    public static ItemStackUtil CreateBouncingSphere(Plugin plugin, final Player player, final Particle particle, final int particleAmount, final float radius, final int amountOfLines, double offsetY) {
+        (new BukkitRunnable() {
+            double phi = 0.0;
+
+            public void run() {
+                this.phi += Math.PI / (double)amountOfLines;
+                Location loc = player.getLocation();
+
+                for(double theta = 0.0; theta <= 6.283185307179586; theta += 0.07853981633974483) {
+                    double x = (double)radius * Math.cos(theta) * Math.sin(this.phi);
+                    double y = (double)radius * Math.cos(this.phi) + 1.5;
+                    double z = (double)radius * Math.sin(theta) * Math.sin(this.phi);
+                    loc.add(x, y, z);
+                    player.spawnParticle(particle, loc, particleAmount, 0.0, 0.0, 0.0, ItemStackUtil.dustOptions);
+                    loc.subtract(x, y, z);
+                }
+
+                if (this.phi > 25.132741228718345) {
+                    this.cancel();
+                }
+
+            }
+        }).runTaskTimer(plugin, 0L, 1L);
+        return null;
     }
 }

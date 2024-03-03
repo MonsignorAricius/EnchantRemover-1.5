@@ -2,12 +2,4 @@ name: Kouzelnik
 version: 2.0
 main: me.aricius.kouzelnik.Kouzelnik
 authors: [Aricius, Kaykka_]
-depend: [EndlessCrystal]
-api-version: 1.19
-
-commands:
-  kouzelnik:
-    description: Reload config of Kouzelník.
-permissions:
-  kouzelnik.reload:
-    default: op
+api-version: 1.20

@@ -23,10 +23,10 @@ public class KouzelnikEvent implements Listener {
         Player player = e.getPlayer();
         Entity npc = e.getRightClicked();
         if (e.getHand() == EquipmentSlot.HAND) {
-            if (npc.hasMetadata("NPC") && npc.getName().equals(plugin.getConfig().getString("NPCname"))) {
+            if (npc.hasMetadata("NPC") && npc.getName().equals("Kouzelník")) {
                 if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
                     player.sendMessage("§8["+ChatColor.of("#FB608A")+"§lKouzelník§8]"+" §7Nemáš v ruce žádný začarovaný item.");
-                } else if (player.getInventory().getItemInMainHand().getEnchantments().size() >= 1) {
+                } else if (!player.getInventory().getItemInMainHand().getEnchantments().isEmpty()) {
                     if (player.getInventory().getItemInMainHand().getEnchantments().size() <= 10) {
                         ItemStack item = player.getInventory().getItemInMainHand();
                         Inventory inv = this.plugin.getServer().createInventory(player, 54, reference.IVNNAME);
@@ -59,7 +59,7 @@ public class KouzelnikEvent implements Listener {
                             Object[] enchants = item.getEnchantments().keySet().toArray();
                             Enchantment[] newEnchants = Arrays.copyOf(enchants, enchants.length, Enchantment[].class);
                             int itemCost = Kouzelnik.getCost(item.getEnchantmentLevel(newEnchants[i]));
-                            inv.setItem(newI, (new ItemStackUtil()).setItem(Material.ENCHANTED_BOOK).enchantedBook(newEnchants[i], item.getEnchantmentLevel(newEnchants[i])).addLore("Cena: " + itemCost + " krystalů").buildItem());
+                            inv.setItem(newI, (new ItemStackUtil()).setItem(Material.ENCHANTED_BOOK).enchantedBook(newEnchants[i], item.getEnchantmentLevel(newEnchants[i])).addLore("Cena: " + itemCost + " XP").buildItem());
                             Kouzelnik.enchants = newEnchants;
                             ++Kouzelnik.amountOfEnchants;
                         }
