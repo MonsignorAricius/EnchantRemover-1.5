@@ -33,6 +33,8 @@ public final class Kouzelnik extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new ObchodnikEvent(), this);
         this.getServer().getPluginManager().registerEvents(this, this);
         plugin = getPlugin(Kouzelnik.class);
+        getCommand("unenchant").setExecutor(new KouzelnikCommand());
+        getCommand("obchodnik").setExecutor(new ObchodnikCommand());
     }
 
     @EventHandler
